@@ -17,39 +17,38 @@ rule "automatic heating"
 when
     Item Heating_Mode changed or
     Item Heating_Setpoint changed or
-    Item Second_Temp changed or 
+    Item Second_Temp changed 
 then
     // 0="Off", 1="On", 2="Auto"
     if (Heating_Mode.state == 0) {
-        // heater off
+        // boiler off
         sendCommand(boiler,OFF)
     } else if (Heating_Mode.state == 1) {
-        // heater on
+        // boiler on
         sendCommand(boiler,ON)
     } else if (Heating_Mode.state == 2) {
-        // get the current setpoint for the nursery
+        // get the current setpoint 
         var Number setpoint = Heating_Setpoint.state as DecimalType
 
         // calculate the turn on/off temperatures
         var Number turnOnTemp = setpoint - 0.5
         var Number turnOffTemp = setpoint + 0.5
 
-        // get the current temperature in the nursery
+        // get the current temperature
         var Number temp = Second_Temp.state as DecimalType
             
-        // determine whether we need to turn on/off the heater
+        // determine whether we need to turn on/off the boiler
         if (temp <= turnOnTemp) {
-            // turn on temp has been reached so switch on the heater
+            // turn on temp has been reached so switch on the boiler
             sendCommand(boiler,ON)
         } else if (temp >= turnOffTemp) {
-            // turn off temp has been reached so switch off the heater
+            // turn off temp has been reached so switch off the boiler
             sendCommand(boiler,OFF)
         }
         } else {
-            // heater off
+            // boiler off
             sendCommand(boiler,OFF)
         }
-    }
 end
 ```
 
